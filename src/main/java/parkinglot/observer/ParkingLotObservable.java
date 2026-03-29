@@ -9,5 +9,6 @@ import java.util.Map;
 
 public interface ParkingLotObservable {
     void addObserver(ParkingLotObserver observer);
+    void removeObserver(ParkingLotObserver observer);
     void notifyObservers();
 }

@@ -7,13 +7,13 @@ import java.util.UUID;
 
 public class ParkingSpot {
     private final String id;
-    private final VehicleType vehicleType;
+    private final VehicleType supportedType;
     private Vehicle assignedVehicle;
     private SlotStatus slotStatus;
 
-    public ParkingSpot(VehicleType vehicleType) {
+    public ParkingSpot(VehicleType supportedType) {
         this.id = UUID.randomUUID().toString();
-        this.vehicleType = vehicleType;
+        this.supportedType = supportedType;
         this.slotStatus = SlotStatus.VACANT;
     }
 
@@ -21,8 +21,8 @@ public class ParkingSpot {
         return id;
     }
 
-    public VehicleType getVehicleType() {
-        return vehicleType;
+    public VehicleType getSupportedType() {
+        return supportedType;
     }
 
     public Vehicle getAssignedVehicle() {
@@ -37,14 +37,21 @@ public class ParkingSpot {
         this.slotStatus = slotStatus;
     }
 
-    public void assignVehicle(Vehicle vehicle) {
-        if (vehicle.getVehicleType() != vehicleType)
-            throw new IllegalArgumentException("This Vehicle type is not allowed! This spot is only for vehicle type:" + vehicleType);
+    public boolean isVacant() {
+        return this.slotStatus == SlotStatus.VACANT;
+    }
+
+    public synchronized void assignVehicle(Vehicle vehicle) {
+        if (vehicle.getVehicleType() != supportedType)
+            throw new IllegalArgumentException(
+                    "Spot supports " + supportedType + ", got " + vehicle.getVehicleType());
+        if (!isVacant())
+            throw new IllegalStateException("Spot " + id + " is already occupied");
         this.assignedVehicle = vehicle;
         this.slotStatus = SlotStatus.OCCUPIED;
     }
 
-    public void removeVehicle() {
+    public synchronized void removeVehicle() {
         if (this.assignedVehicle == null)
             throw new IllegalArgumentException("No Vehicle parked here!");
 

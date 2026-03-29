@@ -13,7 +13,7 @@ public class ParkingFloor {
     public ParkingFloor(String floorNumber, List<ParkingSpot> parkingSpots) {
         this.id = UUID.randomUUID().toString();
         this.floorNumber = floorNumber;
-        this.parkingSpots = parkingSpots;
+        this.parkingSpots = List.copyOf(parkingSpots);
     }
 
     public String getId() {

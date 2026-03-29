@@ -16,7 +16,7 @@ public class NearestSpotAssignmentStrategy implements ParkingSpotAssignmentStrat
     public ParkingSpot getParkingSpot(VehicleType vehicleType) {
         return parkingLot.getParkingFloors().stream()
                 .flatMap(floor -> floor.getAvailableParkingSpots().stream())
-                .filter(spot -> spot.getVehicleType().equals(vehicleType) && spot.getSlotStatus().equals(SlotStatus.VACANT))
+                .filter(spot -> spot.getSupportedType().equals(vehicleType) && spot.getSlotStatus().equals(SlotStatus.VACANT))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("No Parking Spot is available at the moment for the vehicle type : " + vehicleType));
     }

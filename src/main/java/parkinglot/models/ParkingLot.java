@@ -45,6 +45,11 @@ public class ParkingLot implements ParkingLotObservable {
     }
 
     @Override
+    public void removeObserver(ParkingLotObserver observer) {
+        this.observers.remove(observer);
+    }
+
+    @Override
     public void notifyObservers() {
         for (ParkingLotObserver observer : observers)
             observer.update(this);

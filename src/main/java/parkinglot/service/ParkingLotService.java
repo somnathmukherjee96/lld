@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class ParkingLotService {
     private final ParkingLot parkingLot;
     private final ParkingSpotAssignmentStrategy parkingSpotAssignmentStrategy;
-    private final PaymentStrategy paymentStrategy;
+    private PaymentStrategy paymentStrategy;
     private final PricingStrategy pricingStrategy;
 
     public ParkingLotService(ParkingLot parkingLot, ParkingSpotAssignmentStrategy parkingSpotAssignmentStrategy, PaymentStrategy paymentStrategy, PricingStrategy pricingStrategy) {
@@ -20,10 +20,6 @@ public class ParkingLotService {
         this.parkingSpotAssignmentStrategy = parkingSpotAssignmentStrategy;
         this.paymentStrategy = paymentStrategy;
         this.pricingStrategy = pricingStrategy;
-    }
-
-    public void addParkingLotObservers(ParkingLotObserver observer) {
-        this.parkingLot.addObserver(observer);
     }
 
     public Ticket park(Vehicle vehicle) {
@@ -42,5 +38,9 @@ public class ParkingLotService {
     public boolean pay(double amount) {
         paymentStrategy.pay(amount);
         return true;
+    }
+
+    public void switchPaymentStrategy(PaymentStrategy paymentStrategy) {
+        this.paymentStrategy = paymentStrategy;
     }
 }

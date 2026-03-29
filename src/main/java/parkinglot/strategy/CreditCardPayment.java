@@ -11,6 +11,7 @@ public class CreditCardPayment implements PaymentStrategy {
 
     @Override
     public void pay(double amount) {
-        System.out.println("₹" + amount + " is paid via credit Card");
+        System.out.printf("✓ Payment of ₹%.2f processed via Credit Card (holder: %s)%n",
+                amount, accountHolderName);
     }
 }
