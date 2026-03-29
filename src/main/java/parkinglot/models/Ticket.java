@@ -1,16 +1,19 @@
 package parkinglot.models;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class Ticket {
     private final String id;
     private final Vehicle vehicle;
-    private final ParkingFloor parkingFloor;
+    private final ParkingSpot parkingSpot;
+    private LocalDateTime entryTimeStamp;
 
-    public Ticket(Vehicle vehicle, ParkingFloor parkingFloor) {
+    public Ticket(Vehicle vehicle, ParkingSpot parkingSpot) {
         this.id = UUID.randomUUID().toString();
         this.vehicle = vehicle;
-        this.parkingFloor = parkingFloor;
+        this.parkingSpot = parkingSpot;
+        this.entryTimeStamp = LocalDateTime.now();
     }
 
     public String getId() {
@@ -21,7 +24,11 @@ public class Ticket {
         return vehicle;
     }
 
-    public ParkingFloor getParkingFloor() {
-        return parkingFloor;
+    public ParkingSpot getParkingSpot() {
+        return parkingSpot;
+    }
+
+    public LocalDateTime getEntryTimeStamp() {
+        return entryTimeStamp;
     }
 }

@@ -10,10 +10,12 @@ public class ParkingSpot {
     private final VehicleType vehicleType;
     private Vehicle assignedVehicle;
     private SlotStatus slotStatus;
+    private final ParkingFloor parkingFloor;
 
-    public ParkingSpot(VehicleType vehicleType) {
+    public ParkingSpot(VehicleType vehicleType, ParkingFloor parkingFloor) {
         this.id = UUID.randomUUID().toString();
         this.vehicleType = vehicleType;
+        this.parkingFloor = parkingFloor;
     }
 
     public String getId() {
@@ -30,6 +32,10 @@ public class ParkingSpot {
 
     public SlotStatus getSlotStatus() {
         return slotStatus;
+    }
+
+    public ParkingFloor getParkingFloor() {
+        return parkingFloor;
     }
 
     public void setSlotStatus(SlotStatus slotStatus) {
