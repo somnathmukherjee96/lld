@@ -10,12 +10,11 @@ public class ParkingSpot {
     private final VehicleType vehicleType;
     private Vehicle assignedVehicle;
     private SlotStatus slotStatus;
-    private final ParkingFloor parkingFloor;
 
-    public ParkingSpot(VehicleType vehicleType, ParkingFloor parkingFloor) {
+    public ParkingSpot(VehicleType vehicleType) {
         this.id = UUID.randomUUID().toString();
         this.vehicleType = vehicleType;
-        this.parkingFloor = parkingFloor;
+        this.slotStatus = SlotStatus.VACANT;
     }
 
     public String getId() {
@@ -34,10 +33,6 @@ public class ParkingSpot {
         return slotStatus;
     }
 
-    public ParkingFloor getParkingFloor() {
-        return parkingFloor;
-    }
-
     public void setSlotStatus(SlotStatus slotStatus) {
         this.slotStatus = slotStatus;
     }
@@ -46,6 +41,7 @@ public class ParkingSpot {
         if (vehicle.getVehicleType() != vehicleType)
             throw new IllegalArgumentException("This Vehicle type is not allowed! This spot is only for vehicle type:" + vehicleType);
         this.assignedVehicle = vehicle;
+        this.slotStatus = SlotStatus.OCCUPIED;
     }
 
     public void removeVehicle() {
@@ -53,5 +49,6 @@ public class ParkingSpot {
             throw new IllegalArgumentException("No Vehicle parked here!");
 
         this.assignedVehicle = null;
+        this.slotStatus = SlotStatus.VACANT;
     }
 }
