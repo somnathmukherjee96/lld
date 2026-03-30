@@ -1,7 +1,6 @@
 package parkinglot.service;
 
 import parkinglot.models.*;
-import parkinglot.observer.ParkingLotObserver;
 import parkinglot.strategy.ParkingSpotAssignmentStrategy;
 import parkinglot.strategy.PaymentStrategy;
 import parkinglot.strategy.PricingStrategy;
