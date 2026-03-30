@@ -13,8 +13,9 @@ public class NearestElevatorStrategy implements ElevatorSelectionStrategy {
         int minDist = Integer.MAX_VALUE;
         Elevator e = null;
         for (Elevator elevator : elevators) {
-            if (Math.abs(elevator.getCurrentFloor().getFloorNumber() - targetFloor.getFloorNumber()) < minDist) {
-                minDist = Math.abs(elevator.getCurrentFloor().getFloorNumber() - targetFloor.getFloorNumber());
+            int distDiff = Math.abs(elevator.getCurrentFloor().getFloorNumber() - targetFloor.getFloorNumber());
+            if (distDiff < minDist) {
+                minDist = distDiff;
                 e = elevator;
             }
         }
