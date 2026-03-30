@@ -1,7 +1,8 @@
 package elevator.models;
 
 import elevator.ElevatorController;
-import elevator.enums.ElevatorState;
+import elevator.observer.DisplayObserver;
+import elevator.observer.DoorObserver;
 import elevator.strategy.ElevatorSelectionStrategy;
 
 import java.util.ArrayList;
@@ -12,15 +13,20 @@ public class Building {
     private final List<Elevator> elevators;
     private final ElevatorController elevatorController;
 
-    private static Building instance;
+    private static volatile Building instance;
 
-    public static Building getInstance(int numOfFloors, int numOfElevators, ElevatorSelectionStrategy elevatorSelectionStrategy) {
+    public static void initialize(int numOfFloors, int numOfElevators, ElevatorSelectionStrategy elevatorSelectionStrategy) {
         if (instance == null) {
             synchronized (Building.class) {
                 if (instance == null)
                     instance = new Building(numOfFloors, numOfElevators, elevatorSelectionStrategy);
             }
         }
+    }
+
+    public static Building getInstance() {
+        if (instance == null)
+            throw new IllegalArgumentException("Building is not initialized, pls initialize.");
         return instance;
     }
 
@@ -39,8 +45,12 @@ public class Building {
 
     private List<Elevator> initElevators(int numOfElevators) {
         List<Elevator> elevators = new ArrayList<>();
-        for (int i = 0; i < numOfElevators; i++)
-            elevators.add(new Elevator(new Floor(0), ElevatorState.IDLE));
+        for (int i = 0; i < numOfElevators; i++) {
+            Elevator e = new Elevator(floors.get(0));
+            e.addObserver(new DisplayObserver());
+            e.addObserver(new DoorObserver());
+            elevators.add(e);
+        }
         return elevators;
     }
 
@@ -54,5 +64,12 @@ public class Building {
 
     public ElevatorController getElevatorController() {
         return elevatorController;
+    }
+
+    public Floor getFloor(int floorNumber) {
+        return floors.stream()
+                .filter(f -> f.getFloorNumber() == floorNumber)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Floor " + floorNumber + " doesn't exist"));
     }
 }

@@ -25,11 +25,13 @@ public class ElevatorController {
 
     private void handleInternalRequest(InternalRequest request) throws InterruptedException {
         Elevator elevator = request.getElevator();
-        elevator.move(request.getTargetFloor());
+        elevator.addRequest(request.getTargetFloor(), request.getDirection());
+        elevator.move();
     }
 
     private void handleExternalRequest(ExternalRequest request) throws InterruptedException {
         Elevator elevator = elevatorSelectionStrategy.selectElevator(elevators, request);
-        elevator.move(request.getTargetFloor());
+        elevator.addRequest(request.getTargetFloor(), request.getDirection());
+        elevator.move();
     }
 }

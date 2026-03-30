@@ -1,5 +1,7 @@
 package elevator.models;
 
+import elevator.enums.Direction;
+
 public class InternalRequest implements Request {
     private final Floor targetFloor;
     private final Elevator elevator;
@@ -16,5 +18,11 @@ public class InternalRequest implements Request {
 
     public Elevator getElevator() {
         return elevator;
+    }
+
+    public Direction getDirection() {
+        return targetFloor.getFloorNumber() > elevator.getCurrentFloor().getFloorNumber()
+                ? Direction.UP
+                : Direction.DOWN;
     }
 }

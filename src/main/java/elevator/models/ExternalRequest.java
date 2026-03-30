@@ -1,22 +1,23 @@
 package elevator.models;
 
 import elevator.enums.Button;
+import elevator.enums.Direction;
 
 public class ExternalRequest implements Request {
-    private Floor currentFloor;
-    private Button button;
+    private final Floor sourceFloor;
+    private final Direction direction;
 
-    public ExternalRequest(Floor currentFloor, Button button) {
-        this.currentFloor = currentFloor;
-        this.button = button;
+    public ExternalRequest(Floor sourceFloor, Direction direction) {
+        this.sourceFloor = sourceFloor;
+        this.direction = direction;
     }
 
     @Override
     public Floor getTargetFloor() {
-        return currentFloor;
+        return sourceFloor;
     }
 
-    public Button getButton() {
-        return button;
+    public Direction getDirection() {
+        return direction;
     }
 }

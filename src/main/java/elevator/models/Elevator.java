@@ -16,11 +16,11 @@ public class Elevator implements ElevatorObservable {
     private final PriorityQueue<Floor> downQueue;
     private List<ElevatorObserver> observers;
 
-    public Elevator(Floor currentFloor, ElevatorState currentState) {
+    public Elevator(Floor currentFloor) {
         this.id = UUID.randomUUID().toString();
         this.currentFloor = currentFloor;
-        this.currentState = currentState;
-        this.observers = new ArrayList<>();
+        this.currentState = ElevatorState.IDLE;
+        this.observers = Collections.synchronizedList(new ArrayList<>());
         this.upQueue = new PriorityQueue<>();
         this.downQueue = new PriorityQueue<>(Collections.reverseOrder());
     }
@@ -53,40 +53,42 @@ public class Elevator implements ElevatorObservable {
         this.currentDirection = currentDirection;
     }
 
-    public void move(Floor targetFloor) throws InterruptedException {
-        if (!upQueue.isEmpty()) currentDirection = Direction.UP;
-        else if (!downQueue.isEmpty()) currentDirection = Direction.DOWN;
-        else return;
-
-        if (currentDirection.equals(Direction.UP))
-            moveUp(targetFloor);
-        else
-            moveDown(targetFloor);
+    public boolean isIdle() {
+        return currentState == ElevatorState.IDLE;
     }
 
-    public void moveUp(Floor targetFloor) throws InterruptedException {
-        while (!upQueue.isEmpty()) {
-            if (!currentState.equals(ElevatorState.DOOR_OPEN)) {
-                Floor currentFloor = upQueue.poll();
-                this.currentFloor = currentFloor;
-                notifyObserver();
-                if (currentFloor.getFloorNumber() == targetFloor.getFloorNumber())
-                    break;
-                Thread.sleep(2000);
-            }
+    public synchronized void addRequest(Floor floor, Direction direction) {
+        if (direction == Direction.UP) upQueue.offer(floor);
+        else downQueue.offer(floor);
+    }
+
+    public void move() throws InterruptedException {
+        if (!upQueue.isEmpty()) {
+            currentDirection = Direction.UP;
+            moveUp();
+        }
+
+        if (!downQueue.isEmpty()) {
+            currentDirection = Direction.DOWN;
+            moveDown();
         }
     }
 
-    public void moveDown(Floor targetFloor) throws InterruptedException {
+    public void moveUp() throws InterruptedException {
+        currentState = ElevatorState.MOVING_UP;
+        while (!upQueue.isEmpty()) {
+            currentFloor = upQueue.poll();
+            Thread.sleep(2000);
+            notifyObserver();
+        }
+    }
+
+    public void moveDown() throws InterruptedException {
+        currentState = ElevatorState.MOVING_DOWN;
         while (!downQueue.isEmpty()) {
-            if (!currentState.equals(ElevatorState.DOOR_OPEN)) {
-                Floor currentFloor = downQueue.poll();
-                this.currentFloor = currentFloor;
-                notifyObserver();
-                if (currentFloor.getFloorNumber() == targetFloor.getFloorNumber())
-                    break;
-                Thread.sleep(2000);
-            }
+            currentFloor = downQueue.poll();
+            Thread.sleep(2000);
+            notifyObserver();
         }
     }
 
