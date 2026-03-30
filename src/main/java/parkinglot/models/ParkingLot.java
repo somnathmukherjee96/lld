@@ -4,26 +4,30 @@ import parkinglot.observer.ParkingLotObservable;
 import parkinglot.observer.ParkingLotObserver;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 public class ParkingLot implements ParkingLotObservable {
     private static ParkingLot instance;
 
     private final String id;
-    private List<ParkingFloor> parkingFloors;
-    private List<ParkingLotObserver> observers;
+    private final List<ParkingFloor> parkingFloors;
+    private final List<ParkingLotObserver> observers;
 
     private ParkingLot() {
         this.id = UUID.randomUUID().toString();
         this.parkingFloors = new ArrayList<>();
-        this.observers = new ArrayList<>();
+        this.observers = Collections.synchronizedList(new ArrayList<>());
     }
 
     public static ParkingLot getInstance() {
-        if (instance == null)
-            instance = new ParkingLot();
+        if (instance == null) {
+            synchronized (ParkingLot.class) {
+                if (instance == null)
+                    instance = new ParkingLot();
+            }
+        }
         return instance;
     }
 
