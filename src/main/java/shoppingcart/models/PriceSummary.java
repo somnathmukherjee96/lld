@@ -1,4 +1,4 @@
-package ecomcart.models;
+package shoppingcart.models;
 
 public class PriceSummary {
     private final double subTotal;

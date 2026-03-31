@@ -1,8 +1,7 @@
-package ecomcart.enums;
+package shoppingcart.enums;
 
 public enum CartStatus {
     ACTIVE,
-    LOCKED,
     CHECKED_OUT,
-    ABONDONED
+    ABANDONED
 }

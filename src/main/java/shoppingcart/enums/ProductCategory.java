@@ -1,4 +1,4 @@
-package ecomcart.enums;
+package shoppingcart.enums;
 
 public enum ProductCategory {
     ELECTRONICS,

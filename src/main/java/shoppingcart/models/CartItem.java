@@ -1,4 +1,4 @@
-package ecomcart.models;
+package shoppingcart.models;
 
 public class CartItem {
     private final Product product;

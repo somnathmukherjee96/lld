@@ -1,8 +1,9 @@
-package ecomcart.models;
+package shoppingcart.models;
 
-import ecomcart.enums.CartStatus;
+import shoppingcart.enums.CartStatus;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,29 +11,27 @@ public class Cart {
     private final String cartId;
     private final String userId;
     private final List<CartItem> cartItems;
-    private Coupon appliedCoupon;
-    private Discount cartLevelDiscount;
     private CartStatus cartStatus;
+    private Coupon appliedCoupon;
     private final LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     private static final int MAX_QTY_PER_ITEM = 10;
 
-    public Cart(String cartId, String userId, List<CartItem> cartItems, Coupon appliedCoupon) {
+    public Cart(String cartId, String userId) {
         this.cartId = cartId;
         this.userId = userId;
-        this.cartItems = cartItems;
-        this.appliedCoupon = appliedCoupon;
+        this.cartItems = new ArrayList<>();
         this.createdAt = LocalDateTime.now();
+        cartStatus = CartStatus.ACTIVE;
     }
 
+    public Coupon getAppliedCoupon() {
+        return appliedCoupon;
+    }
 
     public void setAppliedCoupon(Coupon appliedCoupon) {
         this.appliedCoupon = appliedCoupon;
-    }
-
-    public void setCartLevelDiscount(Discount cartLevelDiscount) {
-        this.cartLevelDiscount = cartLevelDiscount;
     }
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
@@ -51,9 +50,6 @@ public class Cart {
         return cartItems;
     }
 
-    public Coupon getAppliedCoupon() {
-        return appliedCoupon;
-    }
 
     public CartStatus getCartStatus() {
         return cartStatus;
@@ -87,8 +83,6 @@ public class Cart {
 
     public void clearCart() {
         cartItems.clear();
-        cartLevelDiscount = null;
-        appliedCoupon = null;
     }
 
     public void updateQuantity(CartItem item, int qty) {
@@ -106,4 +100,6 @@ public class Cart {
                 .mapToDouble(CartItem::getSubTotal)
                 .sum();
     }
+
+
 }

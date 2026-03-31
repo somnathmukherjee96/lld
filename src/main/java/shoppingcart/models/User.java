@@ -1,12 +1,14 @@
-package ecomcart.models;
+package shoppingcart.models;
 
 public class User {
     private final String id;
     private final String name;
+    private final String mail;
 
-    public User(String id, String name) {
+    public User(String id, String name, String mail) {
         this.id = id;
         this.name = name;
+        this.mail = mail;
     }
 
     public String getId() {
@@ -15,5 +17,9 @@ public class User {
 
     public String getName() {
         return name;
+    }
+
+    public String getMail() {
+        return mail;
     }
 }
