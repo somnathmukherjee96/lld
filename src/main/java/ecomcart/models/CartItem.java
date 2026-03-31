@@ -12,4 +12,16 @@ public class CartItem {
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public double getSubTotal() {
+        return product.getBasePrice() * quantity;
+    }
 }
