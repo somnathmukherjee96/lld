@@ -1,4 +1,4 @@
 package shoppingcart.models;
 
-public record OrderItem(String productId, double priceAtCheckout) {
+public record OrderItem(String productId, String productName, double priceAtCheckout, int qty) {
 }

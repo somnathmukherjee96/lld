@@ -3,6 +3,10 @@ package shoppingcart.services;
 import shoppingcart.models.Cart;
 import shoppingcart.models.Coupon;
 import shoppingcart.models.Discount;
+import shoppingcart.validators.ActiveStatusValidator;
+import shoppingcart.validators.CouponValidator;
+import shoppingcart.validators.ExpiryValidator;
+import shoppingcart.validators.MinCartValueValidator;
 
 import java.util.Map;
 
@@ -35,21 +39,24 @@ public class DiscountService {
         if (discount.isExpired())
             throw new IllegalArgumentException("Discount " + discount.discountId() + " is expired!");
 
-        return discount.discountType().apply(rawSubTotal);
+        return discount.discountType().calculate(rawSubTotal);
 
     }
 
     public double applyCoupon(Cart cart, String couponId) {
-        Coupon coupon = couponRegistry.entrySet().stream()
-                .filter(entry -> entry.getKey().equals(couponId))
-                .map(Map.Entry::getValue)
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Coupon " + couponId + " not found!"));
+        CouponValidator couponValidator = new ExpiryValidator();
+        couponValidator.setNext(new MinCartValueValidator())
+                .setNext(new ActiveStatusValidator());
 
-        if (!coupon.isValid())
-            throw new IllegalArgumentException("Coupon " + couponId + " is not valid!");
+        Coupon coupon = couponRegistry.get(couponId);
+
+        if (coupon == null)
+            throw new IllegalArgumentException("Coupon not found: " + couponId);
+
+        couponValidator.validate(coupon, cart);
 
         cart.setAppliedCoupon(coupon);
+
         return applyDiscount(cart.getRawSubtotal(), coupon.getDiscount().discountId());
     }
 }

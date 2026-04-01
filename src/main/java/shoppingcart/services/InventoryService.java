@@ -4,14 +4,11 @@ import shoppingcart.models.Product;
 import shoppingcart.observers.InventoryObservable;
 import shoppingcart.observers.InventoryObserver;
 
-import java.sql.SQLOutput;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class InventoryService implements InventoryObservable {
-    private final Map<String, Integer> inventory = new HashMap<>();
+    private final Map<String, Integer> inventory = new ConcurrentHashMap<>();
     private final List<InventoryObserver> observers = new ArrayList<>();
 
     public void addInventory(Product product, int qty) {
@@ -25,16 +22,20 @@ public class InventoryService implements InventoryObservable {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Product " + productId + " not found!"));
 
-        return stock > qty;
+        return stock >= qty;
     }
 
-    public void reserveStock(String productId, int qty) {
-        if (!hasStock(productId, qty)) throw new IllegalArgumentException("Product is out of stock");
+    public synchronized void reserveStock(String productId, int qty) {
+        notifyObservers();
+        if (!hasStock(productId, qty))
+            throw new IllegalArgumentException("Product is out of stock");
 
         inventory.merge(productId, qty, (currentQty, deduct) -> currentQty - deduct);
+
+        notifyObservers();
     }
 
-    public void releaseStock(String productId, int qty) {
+    public synchronized void releaseStock(String productId, int qty) {
         inventory.merge(productId, qty, Integer::sum);
     }
 
@@ -50,7 +51,9 @@ public class InventoryService implements InventoryObservable {
 
     @Override
     public void notifyObservers() {
+        System.out.println("---------inventory---------");
         observers
-                .forEach(observer -> observer.update(inventory));
+                .forEach(observer -> observer.update(Collections.unmodifiableMap(inventory)));
+        System.out.println("---------inventory---------");
     }
 }

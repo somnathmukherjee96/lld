@@ -7,7 +7,6 @@ import shoppingcart.strategy.FlatDiscountStrategy;
 import shoppingcart.strategy.PercentageDiscountStrategy;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
 
 public class ShoppingCartApp {
@@ -30,6 +29,8 @@ public class ShoppingCartApp {
         CartService cartService = new CartService(inventoryService, productService);
         cartService.addCartToTheRegistry(cart1);
 
+        inventoryService.addObserver(cartService);
+
         cartService.addItem(cart1.getCartId(), "P10", 1);
         cartService.addItem(cart1.getCartId(), "P16", 2);
 
@@ -41,11 +42,8 @@ public class ShoppingCartApp {
         subTotal = discountService.applyCoupon(cart1, "FASHION1000");
         System.out.println("Total cart value after applying coupon is " + subTotal);
 
-        CheckoutService checkoutService = new CheckoutService();
-        List<OrderItem> orderItems = new ArrayList<>();
-        for (CartItem cartItem : cart1.getCartItems())
-            orderItems.add(new OrderItem(cartItem.getProduct().getProductId(), cartItem.getProduct().getBasePrice()));
-        checkoutService.checkout(new Order("ORDR01", orderItems, subTotal, LocalDateTime.now()));
+        CheckoutService checkoutService = new CheckoutService(new PricingService(discountService));
+        checkoutService.checkout(cart1);
     }
 
     private static Map<String, Product> populateProductRegistry() {
@@ -183,18 +181,18 @@ public class ShoppingCartApp {
     private static Map<String, Coupon> populateCouponRegistry(Map<String, Discount> discountRegistry) {
         Map<String, Coupon> couponRegistry = new HashMap<>();
 
-        couponRegistry.put("SAVE15TECH", new Coupon("SAVE15TECH", discountRegistry.get("D01"), 100));
-        couponRegistry.put("FASHION1000", new Coupon("FASHION1000", discountRegistry.get("D02"), 150));
-        couponRegistry.put("GROCERY10", new Coupon("GROCERY10", discountRegistry.get("D03"), 200));
-        couponRegistry.put("BOOKBOGO", new Coupon("BOOKBOGO", discountRegistry.get("D04"), 75));
-        couponRegistry.put("HOME20OFF", new Coupon("HOME20OFF", discountRegistry.get("D05"), 120));
-        couponRegistry.put("SPORTS800", new Coupon("SPORTS800", discountRegistry.get("D06"), 90));
-        couponRegistry.put("TECHHOME12", new Coupon("TECHHOME12", discountRegistry.get("D07"), 110));
-        couponRegistry.put("MEGASAVE25", new Coupon("MEGASAVE25", discountRegistry.get("D08"), 50));
+        couponRegistry.put("SAVE15TECH", new Coupon("SAVE15TECH", discountRegistry.get("D01"), 100, 50000));
+        couponRegistry.put("FASHION1000", new Coupon("FASHION1000", discountRegistry.get("D02"), 150, 5000));
+        couponRegistry.put("GROCERY10", new Coupon("GROCERY10", discountRegistry.get("D03"), 200, 2000));
+        couponRegistry.put("BOOKBOGO", new Coupon("BOOKBOGO", discountRegistry.get("D04"), 75, 1000));
+        couponRegistry.put("HOME20OFF", new Coupon("HOME20OFF", discountRegistry.get("D05"), 120, 40000));
+        couponRegistry.put("SPORTS800", new Coupon("SPORTS800", discountRegistry.get("D06"), 90, 3000));
+        couponRegistry.put("TECHHOME12", new Coupon("TECHHOME12", discountRegistry.get("D07"), 110, 30000));
+        couponRegistry.put("MEGASAVE25", new Coupon("MEGASAVE25", discountRegistry.get("D08"), 50, 10000));
 
         // Special variants
-        couponRegistry.put("VIP2026", new Coupon("VIP2026", discountRegistry.get("D01"), 500));
-        couponRegistry.put("FLASH50", new Coupon("FLASH50", discountRegistry.get("D02"), 25));
+        couponRegistry.put("VIP2026", new Coupon("VIP2026", discountRegistry.get("D01"), 500, 50000));
+        couponRegistry.put("FLASH50", new Coupon("FLASH50", discountRegistry.get("D02"), 25, 5000));
 
         return couponRegistry;
     }

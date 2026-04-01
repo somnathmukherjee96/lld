@@ -61,7 +61,7 @@ public class Cart {
 
     public void addItem(Product product, int qty) {
         Optional<CartItem> existingItem = cartItems.stream()
-                .filter(cartItem -> cartItem.getProduct().equals(product))
+                .filter(cartItem -> cartItem.getProduct().getProductId().equals(product.getProductId()))
                 .findFirst();
 
         if (existingItem.isPresent()) {
@@ -69,7 +69,7 @@ public class Cart {
             int newQty = qty + item.getQuantity();
             if (newQty > MAX_QTY_PER_ITEM)
                 throw new IllegalArgumentException("Max quantity exceeded");
-            item.setQuantity(qty);
+            item.setQuantity(newQty);
         } else {
             if (qty > MAX_QTY_PER_ITEM)
                 throw new IllegalArgumentException("Max quantity exceeded");

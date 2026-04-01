@@ -35,16 +35,19 @@ public class CartService implements InventoryObserver {
     public void addItem(String cartId, String productId, int qty) {
         Cart cart = getCart(cartId);
         Product product = productService.getProduct(productId);
-        if (inventoryService.hasStock(productId, qty))
+        if (inventoryService.hasStock(productId, qty)) {
             cart.addItem(product, qty);
-        else
+            inventoryService.reserveStock(productId, qty);
+        } else {
             throw new RuntimeException("Product out of stock!");
+        }
     }
 
     public void removeItem(String cartId, CartItem cartItem) {
         Cart cart = getCart(cartId);
 
         cart.removeItem(cartItem);
+        inventoryService.releaseStock(cartItem.getProduct().getProductId(), cartItem.getQuantity());
     }
 
     public void updateQuantity(String cartId, CartItem cartItem, int qty) {
@@ -70,6 +73,6 @@ public class CartService implements InventoryObserver {
 
     @Override
     public void update(Map<String, Integer> inventory) {
-
+        inventory.forEach((key, value) -> System.out.println(key + "->" + value));
     }
 }

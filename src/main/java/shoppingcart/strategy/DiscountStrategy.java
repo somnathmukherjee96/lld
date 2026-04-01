@@ -1,5 +1,5 @@
 package shoppingcart.strategy;
 
 public interface DiscountStrategy {
-    double apply(double cartTotal);
+    double calculate(double cartTotal);
 }

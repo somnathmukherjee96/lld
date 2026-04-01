@@ -8,8 +8,7 @@ public class PercentageDiscountStrategy implements DiscountStrategy {
     }
 
     @Override
-    public double apply(double cartTotal) {
-        double discount = cartTotal * (percentageDiscount / 100);
-        return Math.max(0, cartTotal - discount);
+    public double calculate(double cartTotal) {
+        return cartTotal * (percentageDiscount / 100);
     }
 }

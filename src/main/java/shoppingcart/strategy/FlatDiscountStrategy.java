@@ -8,7 +8,7 @@ public class FlatDiscountStrategy implements DiscountStrategy {
     }
 
     @Override
-    public double apply(double cartTotal) {
+    public double calculate(double cartTotal) {
         return Math.max(0, cartTotal - flatDiscount);
     }
 }
