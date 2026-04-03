@@ -8,7 +8,7 @@ import java.util.List;
 
 public class ExactSplitStrategy implements SplitStrategy {
     @Override
-    public List<ExpenseSplit> calculateSplit(List<User> participants, double amount, List<Double> splitValues) {
+    public List<ExpenseSplit> calculateSplit(List<String> participants, double amount, List<Double> splitValues) {
         double totalAmount = splitValues.stream()
                 .mapToDouble(Double::doubleValue)
                 .sum();
@@ -19,7 +19,7 @@ public class ExactSplitStrategy implements SplitStrategy {
         List<ExpenseSplit> expenseSplits = new ArrayList<>();
 
         for (int i = 0; i < participants.size(); i++)
-            expenseSplits.add(new ExpenseSplit(participants.get(i).getUserId(), splitValues.get(i)));
+            expenseSplits.add(new ExpenseSplit(participants.get(i), splitValues.get(i)));
 
         return expenseSplits;
     }

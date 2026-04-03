@@ -1,14 +1,13 @@
 package splitwise.strategy;
 
 import splitwise.models.ExpenseSplit;
-import splitwise.models.User;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class PercentageSplitStrategy implements SplitStrategy {
     @Override
-    public List<ExpenseSplit> calculateSplit(List<User> participants, double amount, List<Double> splitValues) {
+    public List<ExpenseSplit> calculateSplit(List<String> participants, double amount, List<Double> splitValues) {
         double totalPercentage = splitValues.stream()
                 .mapToDouble(Double::doubleValue)
                 .sum();
@@ -18,7 +17,7 @@ public class PercentageSplitStrategy implements SplitStrategy {
 
         List<ExpenseSplit> expenseSplits = new ArrayList<>();
         for (int i = 0; i < participants.size(); i++)
-            expenseSplits.add(new ExpenseSplit(participants.get(i).getUserId(), amount / splitValues.get(i)));
+            expenseSplits.add(new ExpenseSplit(participants.get(i), amount / splitValues.get(i)));
 
         return expenseSplits;
     }

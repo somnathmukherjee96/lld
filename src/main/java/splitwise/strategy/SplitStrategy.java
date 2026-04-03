@@ -6,5 +6,5 @@ import splitwise.models.User;
 import java.util.List;
 
 public interface SplitStrategy {
-    List<ExpenseSplit> calculateSplit(List<User> participants, double amount, List<Double> splitValues);
+    List<ExpenseSplit> calculateSplit(List<String> participants, double amount, List<Double> splitValues);
 }

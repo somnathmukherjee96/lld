@@ -10,7 +10,7 @@ public class Group {
     private final String groupId;
     private final String groupName;
     private final boolean isOneOnOne;
-    private final List<User> members;
+    private final List<String> members;
     private final String createdBy;
     private final Map<String, Double> balance = new HashMap<>();
     private final List<Expense> expenses = new ArrayList<>();
@@ -33,7 +33,7 @@ public class Group {
         return groupName;
     }
 
-    public List<User> getMembers() {
+    public List<String> getMembers() {
         return members;
     }
 
@@ -69,7 +69,7 @@ public class Group {
         private String groupId;
         private String groupName = "";
         private boolean isOneOnOne = false;
-        private List<User> members;
+        private List<String> members;
         private String createdBy;
         private LocalDateTime createdAt = LocalDateTime.now();
 
@@ -88,7 +88,7 @@ public class Group {
             return this;
         }
 
-        public GroupBuilder members(List<User> members) {
+        public GroupBuilder members(List<String> members) {
             this.members = members;
             return this;
         }
