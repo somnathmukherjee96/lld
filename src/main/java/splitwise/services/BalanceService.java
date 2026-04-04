@@ -2,6 +2,7 @@ package splitwise.services;
 
 import splitwise.strategy.SimplifyDebtStrategy;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class BalanceService {
@@ -11,5 +12,7 @@ public class BalanceService {
         this.simplifyDebtStrategy = simplifyDebtStrategy;
     }
 
-    public Map<String, Double> getNetBalances()
+    public Map<String, Double> getNetBalances() {
+       return new HashMap<>();
+    }
 }
