@@ -1,7 +1,9 @@
-package policyEvaluationengine.model;
+package policyEvaluationengine.rules;
 
 import policyEvaluationengine.contexts.CustomerOnboardingContext;
 import policyEvaluationengine.enums.AccountStatus;
+import policyEvaluationengine.model.PolicyRule;
+import policyEvaluationengine.model.RuleResult;
 
 public class AccountStatusRule implements PolicyRule<CustomerOnboardingContext> {
     @Override

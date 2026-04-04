@@ -6,9 +6,17 @@ import java.util.List;
 import java.util.Map;
 
 public class CustomerOnboardingPolicy implements Policy<CustomerOnboardingContext> {
+    private final String policyId;
+    private final List<PolicyRule<CustomerOnboardingContext>> policyRules;
+
+    public CustomerOnboardingPolicy(String policyId, List<PolicyRule<CustomerOnboardingContext>> policyRules) {
+        this.policyId = policyId;
+        this.policyRules = policyRules;
+    }
+
     @Override
     public String getPolicyId() {
-        return "CUSTOMER_ONBOARDING_POLICY";
+        return policyId;
     }
 
     @Override
@@ -18,6 +26,6 @@ public class CustomerOnboardingPolicy implements Policy<CustomerOnboardingContex
 
     @Override
     public List<PolicyRule<CustomerOnboardingContext>> getRules() {
-        return List.of(new AccountStatusRule());
+        return policyRules;
     }
 }
