@@ -4,6 +4,7 @@ import shoppingcart.enums.CartStatus;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,6 +33,7 @@ public class Cart {
 
     public void setAppliedCoupon(Coupon appliedCoupon) {
         this.appliedCoupon = appliedCoupon;
+        this.updatedAt = LocalDateTime.now();
     }
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
@@ -47,7 +49,7 @@ public class Cart {
     }
 
     public List<CartItem> getCartItems() {
-        return cartItems;
+        return Collections.unmodifiableList(cartItems);
     }
 
 
@@ -57,9 +59,13 @@ public class Cart {
 
     public void setCartStatus(CartStatus cartStatus) {
         this.cartStatus = cartStatus;
+        this.updatedAt = LocalDateTime.now();
     }
 
     public void addItem(Product product, int qty) {
+        if (qty <= 0)
+            throw new IllegalArgumentException("Quantity must be positive");
+
         Optional<CartItem> existingItem = cartItems.stream()
                 .filter(cartItem -> cartItem.getProduct().getProductId().equals(product.getProductId()))
                 .findFirst();
@@ -75,17 +81,27 @@ public class Cart {
                 throw new IllegalArgumentException("Max quantity exceeded");
             cartItems.add(new CartItem(product, qty));
         }
+        this.updatedAt = LocalDateTime.now();
     }
 
     public void removeItem(CartItem item) {
-        cartItems.removeIf(cartItem -> cartItem.getProduct().equals(item.getProduct()));
+        boolean removed = cartItems.removeIf(cartItem -> cartItem.getProduct().equals(item.getProduct()));
+
+        if (!removed)
+            throw new IllegalArgumentException("Product " + item + " is not in the cart");
+        this.updatedAt = LocalDateTime.now();
     }
 
     public void clearCart() {
         cartItems.clear();
+        this.appliedCoupon = null;
+        this.updatedAt = LocalDateTime.now();
     }
 
     public void updateQuantity(CartItem item, int qty) {
+        if (qty < 1 || qty > MAX_QTY_PER_ITEM)
+            throw new IllegalArgumentException("Quantity must be between 1 and " + MAX_QTY_PER_ITEM);
+
         cartItems.stream()
                 .filter(cartItem -> cartItem.equals(item))
                 .findFirst()
@@ -93,6 +109,7 @@ public class Cart {
                         () -> {
                             throw new IllegalArgumentException("Cart Item not found");
                         });
+        this.updatedAt = LocalDateTime.now();
     }
 
     public double getRawSubtotal() {
@@ -100,6 +117,4 @@ public class Cart {
                 .mapToDouble(CartItem::getSubTotal)
                 .sum();
     }
-
-
 }
