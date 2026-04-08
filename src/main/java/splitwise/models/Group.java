@@ -12,7 +12,7 @@ public class Group {
     private final boolean isOneOnOne;
     private final List<String> members;
     private final String createdBy;
-    private final Map<String, Double> balance = new HashMap<>();
+    private final Map<String, Balance> balances = new HashMap<>();
     private final List<Expense> expenses = new ArrayList<>();
     private final LocalDateTime createdAt;
 
@@ -41,8 +41,8 @@ public class Group {
         return createdBy;
     }
 
-    public Map<String, Double> getBalance() {
-        return balance;
+    public Map<String, Balance> getBalances() {
+        return balances;
     }
 
     public boolean isOneOnOne() {
@@ -53,12 +53,26 @@ public class Group {
         return createdAt;
     }
 
-    public void addBalance(String userId, double amount) {
-        balance.put(userId, amount);
-    }
 
     public void addExpense(Expense expense) {
         expenses.add(expense);
+    }
+
+    public static String balanceKey(String fromId, String toId) {
+        return fromId.compareTo(toId) < 0
+                ? fromId + ":" + toId
+                : toId + ":" + fromId;
+    }
+
+    public void updateBalnce(String fromId, String toId, double amount) {
+        String key = balanceKey(fromId, toId);
+
+        Balance balance = balances.computeIfAbsent(key, k -> new Balance(fromId, toId, amount));
+
+        if (balance.getFromUser().equals(fromId))
+            balance.addAmount(amount);
+        else
+            balance.subtractAmount(amount);
     }
 
     public List<Expense> getExpenses() {

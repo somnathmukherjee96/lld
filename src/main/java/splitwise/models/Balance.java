@@ -3,7 +3,7 @@ package splitwise.models;
 public class Balance {
     private final String fromUser;
     private final String toUser;
-    private final double amount;
+    private double amount;
 
     public Balance(String fromUser, String toUser, double amount) {
         this.fromUser = fromUser;
@@ -21,5 +21,13 @@ public class Balance {
 
     public double getAmount() {
         return amount;
+    }
+
+    public void addAmount(double amt) {
+        amount += amt;
+    }
+
+    public void subtractAmount(double amt) {
+        amount -= amt;
     }
 }
